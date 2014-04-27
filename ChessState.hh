@@ -10,13 +10,6 @@ namespace {
 
 typedef enum ChessPieceNames{
 	PAWN_1 = 0,
-	PAWN_2,
-	PAWN_3,
-	PAWN_4,
-	PAWN_5,
-	PAWN_6,
-	PAWN_7,
-	PAWN_8,
 	ROOK_1,
 	BISHOP_1,
 	KNIGHT_1,
@@ -35,49 +28,51 @@ private:
 };
 
 // Class defintion for a give piece.
-class Piece {
+class Pieces {
 private :
 	int piece_num;
 	Position pos;
 public :
 	Piece();
 	void initPiece(int, Poistion &);
+	Pieces getPieceInfo();
+	Pieces setPieceInfo(int piece_num, Position pos);
 };
 
 // A Player is defined by the color of the pieces as well as the 16 pieces assigned.
 class Players {
 private:
-	int type	//black or white
+	int type;
 	Pieces	*piece[16];
 public:
 	Players(int type);	
+	int MovePiece (int piece, Position &pos); 
 };
 
 // Chess Game includes a chess board and 2 players. 
 class ChessGame() {
 private:
 	// 2 players of the Chess Game;
-	Players	player1 (int );
-	Players player2 (int );
+	Players	WhitePl;
+	Players BlackPl;
 	// Data Structure to store State of the game
 //	vector<vector><Position> moveState;
-	Node *head;
 	int chess_board[8][8];
+	int currMove;
+	Node *head;
+	Node *tail;
 
 public:
 	ChessGame ();
-	void MovePiece (int player, int piece, Position &pos); 
 	void RestoreMove (int move);
 };
 
 
 typedef struct Node_t {
-	Piece stateInfo;
-	Node_t *left;
-	Node_t *right;
+	int type;
+	Piece *pieceInfo;
+	Node_t *next;
+	Node_t *prev;
+	
 }Node;
 
-
-	
-	
-				
