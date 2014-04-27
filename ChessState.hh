@@ -23,8 +23,13 @@ typedef enum ChessPieceNames{
 //Class to maintain the position on the Chess Board.
 Class Position {
 private:
-	int i;
-	int j;
+	int x;
+	int y;
+public:
+	int GetX();
+	int GetY();
+	void SetX(int );
+	void SetY(int );
 };
 
 // Class defintion for a give piece.

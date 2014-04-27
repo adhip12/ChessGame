@@ -2,16 +2,16 @@
 
 Piece:: Piece ()
 {
-	pos.i = -1;
-	pos.j = -1;
+	pos.x = -1;
+	pos.y = -1;
 	int piece_num = -1;
 }
 
 Piece :: void initPieces (int num, Position &pos)
 {
 	piece_num = num;
-	this->pos.i = pos->i;
-	this->pos.j = pos->j;
+	this->pos.SetX(pos.x);
+	this->pos.SetY(pos.y);
 }
 
 Players:: Players(int type)
