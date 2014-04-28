@@ -15,16 +15,22 @@ typedef enum Error_t {
 }Errors;
 
 typedef enum ChessPieceTypes{
-	PAWN_1 = 1,
-	PAWN_8 = 8,
-	ROOK_1,
-	BISHOP_1,
-	KNIGHT_1,
-	KING_1,
-	QUEEN_1,
-	KNIGHT_2,
-	BISHOP_2,
-	ROOK_2,
+	PAWN1 = 1,
+	PAWN2,
+	PAWN3,
+	PAWN4,
+	PAWN5,
+	PAWN6,
+	PAWN7,
+	PAWN8,
+	ROOK1,
+	BISHOP1,
+	KNIGHT1,
+	KING1,
+	QUEEN1,
+	KNIGHT2,
+	BISHOP2,
+	ROOK2,
 	INVALID_PIECE_TYPE
 }PieceType;
 
