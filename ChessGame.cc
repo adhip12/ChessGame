@@ -2,17 +2,19 @@
 
 Position::Position(const int row, const int col) : x(row), y(col) {}
 
+Piece:: Piece (const PieceType type, const Position &posn) : pieceType(type), pos(posn) {}
 
-Piece:: Piece (const PieceType type, const Position &pos) : pieceType(type), pos(position) {}
+Position::Position() : x(-1), y(-1) {}
 
 Piece::Piece()
 {
 	setPieceType(INVALID_PIECE_TYPE);
-	setPosition(Position (-1, -1));
+	setPosition(Position(-1, -1));
+	pos = Position(-1, -1);
 
 }
 
-void Piece :: initPiece (const PieceType type, const Position &pos)
+void Piece :: initPiece (const PieceType type, Position &pos)
 {
 	setPieceType (type);	
 	setPosition (pos);
@@ -26,8 +28,8 @@ Player:: Player(Color color)
 	setColor(color);	
 
 	for (int type = 0; type < NUM_PIECES; type++) {
-		Position pos = GetInitialPositionOfPiece (type, color);
-		piece[type].initPiece(type, &pos);
+		Position pos = GetInitialPositionOfPiece ((PieceType)type, color);
+		piece[type].initPiece((PieceType)type, pos);
 		//newPiece.initPiece (num, Position(pos.i, pos.j));			
 		//piece[num] = *newPiece;
 	}
@@ -35,22 +37,50 @@ Player:: Player(Color color)
 
 ChessGame::ChessGame() : head (0), tail(0), currMove(0) 
 {
+	int x = 0, y = 0; 
 	player1 = new Player (White);
 	player2 = new Player (Black);
-
+	Color color = White;
 	// Initialize the Chess board, and mark the initial positions with the Piece info.
-	for (int row = 0, row1 = 6;row <= 1, row1 <= 7;row++, row1++) {
-		for (int col = 0; col < 7; col ++) {
-			chess_board[col][row] = TAKEN; 
-			chess_board[col][row1] = TAKEN; 
-		}
-	}
+	memset (chess_board, 0, sizeof(chess_board[0][0]) * 8 * 8);
+
+	for (int type = 0; type < NUM_PIECES; type++) {
+		color = White;
+		Position pos = GetInitialPositionOfPiece ((PieceType)type, color);
+		x = pos.GetX();	
+		y = pos.GetY();	
+		chess_board[x][y] = type;
+		color = Black;
+		pos = GetInitialPositionOfPiece ((PieceType)type, color);
+		x = pos.GetX();	
+		y = pos.GetY();	
+		chess_board[x][y] = 2 * type;
+	}		
 }
 
 ChessGame::~ChessGame ()
 {
 	delete player1;
 	delete player2;
+}
+
+Position GetInitialPositionOfPiece (PieceType type, Color color)
+{
+	int position;
+
+	if (color == White) {
+		if (type < PAWN_8) {
+			return (Position(1, type - 1));
+		} else {
+			return (Position(0, type - PAWN_8 - 1));
+		}
+	} else {
+		if (type < PAWN_8) {
+			return (Position (6, type - 1));		
+		} else {
+			return (Position (7, type - PAWN_8 - 1));
+		}		
+	}
 }
 
 #if 0
@@ -78,7 +108,7 @@ ChessGame::int RestoreToMove(int move)
 
 
 
-Players:: int MovePiece (int piece, Position &pos)
+int Piece::MovePiece (PieceType piece, Position &pos)
 {
 	//Check Position, if its already taken.
 	if (chess_board[pos->i, pos->j] == TAKEN) {
@@ -109,8 +139,8 @@ Players:: int MovePiece (int piece, Position &pos)
 	currMove ++;
 	
 }
-#endif
 
+#endif
 
 
 
