@@ -10,7 +10,6 @@ Piece::Piece()
 {
 	setPieceType(INVALID_PIECE_TYPE);
 	setPosition(Position(-1, -1));
-	pos = Position(-1, -1);
 
 }
 
