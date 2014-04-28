@@ -45,6 +45,7 @@ private :
 	Position pos;
 public :
 	//Constructor
+	Piece();
 	Piece(const PieceType type, const Position &pos);
 
 	PieceType getPieceType () const { return pieceType; }
@@ -56,13 +57,12 @@ public :
 // A Player is defined by the color of the pieces as well as the 16 pieces assigned.
 class Player {
 private:
-	Color color;
-	Pieces	*piece[NUM_PIECES];
+	Color   color;
+	Piece	piece[NUM_PIECES];
+	void setColor(Color color) { this->color = color; }
 public:
 	//Constructor
-	Player(Color color);	
-	
-	void setColor(Color color) { this->color = color; }
+	Player(const Color color);	
 
 	Color getColor() const { return color; }
 
@@ -71,26 +71,37 @@ public:
 
 
 // Chess Game includes a chess board and 2 players. 
+//Compiler by default generates a copy constructror, if I havent defined one.
 class ChessGame() {
 private:
-	// 2 players of the Chess Game;
-	Players	player1;
-	Players player2;
 
 	int chess_board[8][8];
-	int currMove;
 	MoveHistoryNode *head;
 	MoveHistoryNode *tail;
+	int currMove;
+
+	// 2 players of the Chess Game;
+	Player *player1;
+	Player *player2;
+
+	//Copy Constructor
+	ChessGame (const ChessGame &);
+	// Assignement Operator
+	ChessGame operator=(const ChessGame &);
 
 public:
 	//Constructor 
 	ChessGame ();
+
+	//Destructor
+	~ChessGame();
+
 	void RestoreMove (int move);
 };
 
 
 typedef struct Move_History_Node_t {
-	int type;
+	PieceType type;
 	Piece *pieceInfo;
 	Node_t *next;
 	Node_t *prev;

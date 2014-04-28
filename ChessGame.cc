@@ -5,32 +5,36 @@ Position::Position(const int row, const int col) : x(row), y(col) {}
 
 Piece:: Piece (const PieceType type, const Position &pos) : pieceType(type), pos(position) {}
 
-Piece :: void initPiece (int num, Position &pos)
+Piece::Piece()
 {
-	piece_num = num;
-	this->pos.SetX(pos.x);
-	this->pos.SetY(pos.y);
+	setPieceType(INVALID_PIECE_TYPE);
+	setPosition(Position (-1, -1));
+
+}
+
+void Piece :: initPiece (const PieceType type, const Position &pos)
+{
+	setPieceType (type);	
+	setPosition (pos);
+	//piece_num = num;
+	//this->pos.SetX(pos.x);
+	//this->pos.SetY(pos.y);
 }
 
 Player:: Player(Color color)
 {
-	Position pos;
 	setColor(color);	
 
 	for (int type = 0; type < NUM_PIECES; type++) {
-		pos = GetInitialPositionOfPiece (type, color);
-		Piece *newPiece = new Piece (type, pos);
+		Position pos = GetInitialPositionOfPiece (type, color);
+		piece[type].initPiece(type, &pos);
 		//newPiece.initPiece (num, Position(pos.i, pos.j));			
-		piece[num] = *newPiece;
+		//piece[num] = *newPiece;
 	}
 }
 
-ChessGame::ChessGame()
+ChessGame::ChessGame() : head (0), tail(0), currMove(0) 
 {
-	head = NULL;
-	tail = NULL;
-	currMove = 0;	
-
 	player1 = new Player (White);
 	player2 = new Player (Black);
 
@@ -42,6 +46,36 @@ ChessGame::ChessGame()
 		}
 	}
 }
+
+ChessGame::~ChessGame ()
+{
+	delete player1;
+	delete player2;
+}
+
+#if 0
+ChessGame::int RestoreToMove(int move) 
+{
+	int count = move;
+	// Go back to initial positions.
+	ChessGame();
+
+	if ((move > currMove) || (move < 0)) {
+		return NO_SUCH_MOVE_ERROR;
+	}
+
+	// Traverse the list, until we reach the move number
+	while (count != 0) {
+		Node *node = head;
+		RestorePiece(node->type, )
+
+	}
+
+
+
+}
+	 
+
 
 
 Players:: int MovePiece (int piece, Position &pos)
@@ -75,28 +109,8 @@ Players:: int MovePiece (int piece, Position &pos)
 	currMove ++;
 	
 }
+#endif
 
-ChessGame::int RestoreToMove(int move) 
-{
-	int count = move;
-	// Go back to initial positions.
-	ChessGame();
-
-	if ((move > currMove) || (move < 0)) {
-		return NO_SUCH_MOVE_ERROR;
-	}
-
-	// Traverse the list, until we reach the move number
-	while (count != 0) {
-		Node *node = head;
-		RestorePiece(node->type, )
-
-	}
-
-
-
-}
-	 
 
 
 
