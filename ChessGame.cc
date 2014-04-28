@@ -12,7 +12,7 @@ Piece :: void initPiece (int num, Position &pos)
 	this->pos.SetY(pos.y);
 }
 
-Players:: Players(Color color)
+Player:: Player(Color color)
 {
 	Position pos;
 	setColor(color);	

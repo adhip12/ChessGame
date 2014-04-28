@@ -50,7 +50,7 @@ public :
 	PieceType getPieceType () const { return pieceType; }
 	Position getPosition() const { return pos; }
 	void setPieceType (const PieceType type) { this->pieceType = type; }
-	void setPosition (const Position pos) { this->pos = pos; }
+	void setPosition (const Position &pos) { this->pos = pos; }
 };
 
 // A Player is defined by the color of the pieces as well as the 16 pieces assigned.
@@ -62,15 +62,9 @@ public:
 	//Constructor
 	Player(Color color);	
 	
-	void setColor(Color color)
-	{
-		this->color = color;
-	};
+	void setColor(Color color) { this->color = color; }
 
-	Color getColor() const
-	{
-		return color;
-	};
+	Color getColor() const { return color; }
 
 	int MovePiece (int piece, Position &pos); 
 };
