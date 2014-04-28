@@ -71,13 +71,13 @@ Position GetInitialPositionOfPiece (PieceType type, Color color)
 		if (type < PAWN8) {
 			return (Position(1, type - 1));
 		} else {
-			return (Position(0, type - PAWN_8 - 1));
+			return (Position(0, type - PAWN8 - 1));
 		}
 	} else {
 		if (type < PAWN8) {
 			return (Position (6, type - 1));		
 		} else {
-			return (Position (7, type - PAWN_8 - 1));
+			return (Position (7, type - PAWN8 - 1));
 		}		
 	}
 }
