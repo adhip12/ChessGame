@@ -3,7 +3,7 @@
 using namespace std;
 
 namespace {
-	static const int num_pieces = 16;	
+	static const int NUM_PIECES = 16;	
 	static const int position = 2;
 	static const int chess_board[8][8];
 }
@@ -31,10 +31,11 @@ private:
 	int x;
 	int y;
 public:
+	Poistion(const int x, const int y);
 	int GetX() const { return x; }
 	int GetY() const { return y; }
-	void SetX(int x) { this->x = x; }
-	void SetY(int y) { this->y = y; }
+	void SetX(const int x) { this->x = x; }
+	void SetY(const int y) { this->y = y; }
 };
 
 // Class defintion for a give piece.
@@ -44,25 +45,22 @@ private :
 	Position pos;
 public :
 	//Constructor
-	Piece(PieceType type, Position pos);
+	Piece(const PieceType type, const Position &pos);
 
 	PieceType getPieceType () const { return pieceType; }
-	void setPieceType (PieceType type) { this->pieceType = type; }
-
-	// void initPiece(int, Poistion &);
-
 	Position getPosition() const { return pos; }
-	void setPosition (Position pos) { this->pos = pos; }
+	void setPieceType (const PieceType type) { this->pieceType = type; }
+	void setPosition (const Position pos) { this->pos = pos; }
 };
 
 // A Player is defined by the color of the pieces as well as the 16 pieces assigned.
 class Player {
 private:
 	Color color;
-	Pieces	*piece[16];
+	Pieces	*piece[NUM_PIECES];
 public:
 	//Constructor
-	Player(Color);	
+	Player(Color color);	
 	
 	void setColor(Color color)
 	{

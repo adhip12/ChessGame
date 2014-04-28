@@ -1,10 +1,9 @@
 #include "ChessState.hh"
 
-Piece:: Piece (PieceType type, Position pos)
-{
-	this->pos.setPosition(pos);
-	this->pieceType = type;
-}
+Position::Position(const int row, const int col) : x(row), y(col) {}
+
+
+Piece:: Piece (const PieceType type, const Position &pos) : pieceType(type), pos(position) {}
 
 Piece :: void initPiece (int num, Position &pos)
 {
@@ -101,6 +100,3 @@ ChessGame::int RestoreToMove(int move)
 
 
 
-
-
-}
