@@ -13,7 +13,7 @@ typedef enum Colors_t {
 	Black
 }Color;
 
-typedef enum ChessPieceNames{
+typedef enum ChessPieceTypes{
 	PAWN_1 = 0,
 	ROOK_1,
 	BISHOP_1,
@@ -23,7 +23,7 @@ typedef enum ChessPieceNames{
 	KNIGHT_2,
 	BISHOP_2,
 	ROOK_2
-}Names;
+}PieceTypes;
 
 //Class to maintain the position on the Chess Board.
 Class Position {
@@ -44,7 +44,7 @@ private :
 	Position pos;
 public :
 	//Constructor
-	Piece(PieceType type, Position &pos);
+	Piece(PieceType type, Position pos);
 
 	PieceType getPieceType () const { return pieceType; }
 	void setPieceType (PieceType type) { this->pieceType = type; }
@@ -63,7 +63,6 @@ private:
 public:
 	//Constructor
 	Player(Color);	
-
 	
 	void setColor(Color color)
 	{

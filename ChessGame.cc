@@ -1,12 +1,9 @@
 #include "ChessState.hh"
 
-Piece:: Piece (PieceType type, int x, int y)
+Piece:: Piece (PieceType type, Position pos)
 {
-	
-	//initPiece (pieceType, pos);
-	pos.setX(x); = -1;
-	pos.y = -1;
-	int piece_num = -1;
+	this->pos.setPosition(pos);
+	this->pieceType = type;
 }
 
 Piece :: void initPiece (int num, Position &pos)
@@ -22,8 +19,8 @@ Players:: Players(Color color)
 	setColor(color);	
 
 	for (int type = 0; type < NUM_PIECES; type++) {
-		pos = getPosition (num, color);
-		Piece *newPiece = new Piece (type, new Position (pos.x, pos.y);
+		pos = GetInitialPositionOfPiece (type, color);
+		Piece *newPiece = new Piece (type, pos);
 		//newPiece.initPiece (num, Position(pos.i, pos.j));			
 		piece[num] = *newPiece;
 	}
