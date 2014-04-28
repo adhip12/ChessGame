@@ -1,26 +1,31 @@
 #include "ChessState.hh"
 
-Piece:: Piece ()
+Piece:: Piece (PieceType type, int x, int y)
 {
-	pos.x = -1;
+	
+	//initPiece (pieceType, pos);
+	pos.setX(x); = -1;
 	pos.y = -1;
 	int piece_num = -1;
 }
 
-Piece :: void initPieces (int num, Position &pos)
+Piece :: void initPiece (int num, Position &pos)
 {
 	piece_num = num;
 	this->pos.SetX(pos.x);
 	this->pos.SetY(pos.y);
 }
 
-Players:: Players(int type)
+Players:: Players(Color color)
 {
 	Position pos;
-	this.type = type;	
-	for (int num = 0; i < NUM_PIECES; num++) {
-		pos = getPosition (i, type);
-		pieces[i].initPieces (num, Position(pos.i, pos.j));			
+	setColor(color);	
+
+	for (int type = 0; type < NUM_PIECES; type++) {
+		pos = getPosition (num, color);
+		Piece *newPiece = new Piece (type, new Position (pos.x, pos.y);
+		//newPiece.initPiece (num, Position(pos.i, pos.j));			
+		piece[num] = *newPiece;
 	}
 }
 
@@ -29,8 +34,11 @@ ChessGame::ChessGame()
 	head = NULL;
 	tail = NULL;
 	currMove = 0;	
-	
-	// Initialize the Chess board, and mark the initial positions as filled 
+
+	player1 = new Player (White);
+	player2 = new Player (Black);
+
+	// Initialize the Chess board, and mark the initial positions with the Piece info.
 	for (int row = 0, row1 = 6;row <= 1, row1 <= 7;row++, row1++) {
 		for (int col = 0; col < 7; col ++) {
 			chess_board[col][row] = TAKEN; 
