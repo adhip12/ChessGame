@@ -17,7 +17,8 @@ typedef enum Error_t {
 	SUCCESS = 0,
 	POSITION_ERROR = 1,
 	PLAYER_ERROR,
-	INVALID_MOVE_ERROR
+	INVALID_MOVE_ERROR,
+	NOT_CORRECT_PLAYER_ERROR
 }Errors;
 
 typedef enum ChessPieceTypes{
@@ -105,14 +106,20 @@ private:
 	int 	currMove;
 	Color	nextTurn;
 
-	// 2 players of the Chess Game;
+	/* 2 players of the Chess Game */
 	Player *player1;
 	Player *player2;
 
-	//Copy Constructor
+	/* Copy Constructor */
 	ChessGame (const ChessGame &);
-	// Assignement Operator
+	/* Assignement Operator */
 	ChessGame operator=(const ChessGame &);
+
+	/* Array of Piece */
+	typedef vector<Piece> ChessBoard;
+
+	/* Array of Chessboard for each move */
+	typedef vector<ChessBoard> ChessGameMoves;
 
 public:
 	//Constructor 
@@ -121,16 +128,21 @@ public:
 	//Destructor
 	~ChessGame();
 
-	int SetChessBoardByPieceType (const PieceType type, const Color color);
+
+	int GetCurrentMove() { return currMove; }
+	int GetNextTurn() const { return nextTurn; }
 	int GetChessBoardValues (int x, int y);
 
-	int GetNextTurn() const { return nextTurn; }
+	void SetCurrentMove (int move) { this->currMove = move; }
 	void SetNextTurn(Color color) { this->nextTurn = color; } 
+	int SetChessBoardByPieceType (const PieceType type, const Color color);
 
-	void RestoreMove (int move);
-	
+	Color	GetColorFromTypeNumber (int value);
+
+	//Moving a Piece	
 	int PlayerMovePiece (const Color color, const PieceType type, const Position pos);
 	
+	void RestoreMove (int move);
 
 	//Debugging
 	void PrintBoardValues();

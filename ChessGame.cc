@@ -136,10 +136,22 @@ void ChessGame::PrintBoardValues()
 	}
 }
 
+Color ChessGame::GetColorFromTypeNumber(int value)
+{
+	if (value > 16) {
+		return Black;
+	} else {
+		return White;
+	}
+}
+
 int ChessGame::PlayerMovePiece (const Color color, const PieceType type, const Position pos)
 {
 	// If the Position is taken by another piece.
 	int value = 0;
+	if (GetNextTurn() != color) {
+		return NOT_CORRECT_PLAYER_ERROR;
+	}
 	if ((value = GetChessBoardValues(pos.GetX(), pos.GetY())) != 0) {	
 		/* If the color of the piece at pos is the same as the one making 
 		   the move, then the move is Invalid 
@@ -172,8 +184,15 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType type, const P
 	} else {
 		return PLAYER_ERROR;
 	}
+	// Store the Latest Positions on the Chess board.
 	SetChessBoardByPieceType (type, color);
-	SetNextTurn(!color);
+	// Change Turn
+	SetNextTurn(color == White ? Black : White);
+	/* Set Current Move number */
+	SetCurrentMove (GetCurrentMove() ++);
+
+	//Store Move History.
+	AddMoveToHistory ()
 
 	return SUCCESS;
 
