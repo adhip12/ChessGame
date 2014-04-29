@@ -4,7 +4,7 @@ Position::Position(const int row, const int col) : x(row), y(col) {}
 
 bool Position::InvalidPositionForPieceType() 
 {
-	int x = GetX();	
+	int x = GetX();	// remove these lines since only class members accessed.
 	int y = GetY();
 
 	if (((x < 0) || (y < 0)) || (x > 7) || (y > 7)) {
@@ -17,6 +17,7 @@ bool Position::InvalidPositionForPieceType()
 
 Piece:: Piece (const PieceType type, const Position &posn, const bool killStatus) : pieceType(type), pos(posn), killed(killStatus) {}
 
+//move this line on top, basically write all the constructors together.
 Position::Position() : x(INV_POS), y(INV_POS) {}
 
 Piece::Piece(): pieceType(INVALID_PIECE_TYPE), pos(INV_POS, INV_POS), killed(false)
@@ -35,6 +36,7 @@ void Piece :: initPiece (const PieceType type, const Position &pos)
 	//this->pos.SetY(pos.y);
 }
 
+//Add const before pieceColor
 Player:: Player(Color pieceColor): color(pieceColor)
 {
 	for (int type = 1; type <= NUM_PIECES; type++) {
@@ -45,6 +47,7 @@ Player:: Player(Color pieceColor): color(pieceColor)
 	}
 }
 
+// use const for param passed in the function
 Position Player::GetInitialPositionOfPiece (PieceType type, Color color)
 {
 	int position;
@@ -66,6 +69,7 @@ Position Player::GetInitialPositionOfPiece (PieceType type, Color color)
 	}
 }
 
+// use const for param passed in the function
 Piece& Player::GetPieceObjectFromPieceType(PieceType type)
 {
 	return (this->piece[(int)type - 1]);
@@ -120,6 +124,7 @@ int ChessGame::SetChessBoardByPieceType (const PieceType type, const Color color
 
 }
 
+// use const for param passed in the function
 int ChessGame::GetChessBoardValues (int x, int y)
 {
 	return chess_board[x][y];
@@ -136,6 +141,7 @@ void ChessGame::PrintBoardValues()
 	}
 }
 
+// use const for param passed in the function
 Color ChessGame::GetColorFromTypeNumber(int value)
 {
 	if (value > 16) {
@@ -152,6 +158,9 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType type, const P
 	if (GetNextTurn() != color) {
 		return NOT_CORRECT_PLAYER_ERROR;
 	}
+	
+	/* I will prefer rewrite of this code, discuss offline */
+	
 	if ((value = GetChessBoardValues(pos.GetX(), pos.GetY())) != 0) {	
 		/* If the color of the piece at pos is the same as the one making 
 		   the move, then the move is Invalid 
@@ -187,8 +196,10 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType type, const P
 	// Store the Latest Positions on the Chess board.
 	SetChessBoardByPieceType (type, color);
 	// Change Turn
+	// move the logic inside the fn SetNextTurn
 	SetNextTurn(color == White ? Black : White);
 	/* Set Current Move number */
+	// implement increment move
 	SetCurrentMove (GetCurrentMove() ++);
 
 	//Store Move History.
