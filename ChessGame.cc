@@ -2,59 +2,88 @@
 
 Position::Position(const int row, const int col) : x(row), y(col) {}
 
-Piece:: Piece (const PieceType type, const Position &posn) : pieceType(type), pos(posn) {}
-
-Position::Position() : x(-1), y(-1) {}
-
-Piece::Piece()
+bool Position::InvalidPositionForPieceType() 
 {
-	setPieceType(INVALID_PIECE_TYPE);
-	setPosition(Position(-1, -1));
+	int x = GetX();	
+	int y = GetY();
+
+	if (((x < 0) || (y < 0)) || (x > 7) || (y > 7)) {
+		return true;
+	} else {
+		return false;
+	}
+	
+}	
+
+Piece:: Piece (const PieceType type, const Position &posn, const bool killStatus) : pieceType(type), pos(posn), killed(killStatus) {}
+
+Position::Position() : x(INV_POS), y(INV_POS) {}
+
+Piece::Piece(): pieceType(INVALID_PIECE_TYPE), pos(INV_POS, INV_POS), killed(false)
+{
+//	setPieceType(INVALID_PIECE_TYPE);
+//	setPosition(Position(-1, -1));
 
 }
 
-void Piece :: initPiece (const PieceType type, Position &pos)
+void Piece :: initPiece (const PieceType type, const Position &pos)
 {
-	setPieceType (type);	
-	setPosition (pos);
+	SetPieceType (type);
+	SetPosition (pos);
 	//piece_num = num;
 	//this->pos.SetX(pos.x);
 	//this->pos.SetY(pos.y);
 }
 
-Player:: Player(Color color)
+Player:: Player(Color pieceColor): color(pieceColor)
 {
-	setColor(color);	
-
-	for (int type = 0; type < NUM_PIECES; type++) {
+	for (int type = 1; type <= NUM_PIECES; type++) {
 		Position pos = GetInitialPositionOfPiece ((PieceType)type, color);
-		piece[type].initPiece((PieceType)type, pos);
+		piece[type - 1].initPiece((PieceType)type, pos);
 		//newPiece.initPiece (num, Position(pos.i, pos.j));			
 		//piece[num] = *newPiece;
 	}
 }
 
-ChessGame::ChessGame() : head (0), tail(0), currMove(0) 
+Position Player::GetInitialPositionOfPiece (PieceType type, Color color)
 {
-	int x = 0, y = 0; 
+	int position;
+
+	if (color == White) {
+		if (type <= PAWN8) {
+			return (Position(1, type - 1));
+		} else {
+			return (Position(0, type - PAWN8 - 1));
+		}
+	} else if (color == Black) {
+		if (type <= PAWN8) {
+			return (Position (6, type - 1));		
+		} else {
+			return (Position (7, type - PAWN8 - 1));
+		}		
+	} else {
+		return Position(INV_POS, INV_POS);
+	}
+}
+
+Piece& Player::GetPieceObjectFromPieceType(PieceType type)
+{
+	return (this->piece[(int)type - 1]);
+}
+
+
+ChessGame::ChessGame() : head (0), tail(0), currMove(0), nextTurn (White) 
+{
 	player1 = new Player (White);
 	player2 = new Player (Black);
-	Color color = White;
-	// Initialize the Chess board, and mark the initial positions with the Piece info.
-	memset (chess_board, 0, sizeof(chess_board[0][0]) * 8 * 8);
 
-	for (int type = 0; type < NUM_PIECES; type++) {
-		color = White;
-		Position pos = GetInitialPositionOfPiece ((PieceType)type, color);
-		x = pos.GetX();	
-		y = pos.GetY();	
-		chess_board[x][y] = type;
-		color = Black;
-		pos = GetInitialPositionOfPiece ((PieceType)type, color);
-		x = pos.GetX();	
-		y = pos.GetY();	
-		chess_board[x][y] = 2 * type;
-	}		
+	// Initialize the Chess board, and mark the initial positions with the Piece info.
+	memset (chess_board, 0, sizeof(chess_board));
+
+	for (int type = 1; type <= NUM_PIECES; type++) {
+		SetChessBoardByPieceType ((PieceType)type, White); 
+		SetChessBoardByPieceType ((PieceType)type, Black); 
+	}
 }
 
 ChessGame::~ChessGame ()
@@ -63,24 +92,93 @@ ChessGame::~ChessGame ()
 	delete player2;
 }
 
-Position GetInitialPositionOfPiece (PieceType type, Color color)
+int ChessGame::SetChessBoardByPieceType (const PieceType type, const Color color)
 {
-	int position;
+	int x = 0, y = 0; 
+	Position pos;
+	if (color == White) {
+		const Piece &piece = player1->GetPieceObjectFromPieceType(type);
+		pos = piece.GetPosition();
+	} else if (color == Black) {
+		const Piece &piece = player2->GetPieceObjectFromPieceType(type);
+		pos = piece.GetPosition();
+	}
+
+	if (pos.InvalidPositionForPieceType()) {
+		return POSITION_ERROR;
+	}
+
+	x = pos.GetX();	
+	y = pos.GetY();	
 
 	if (color == White) {
-		if (type < PAWN8) {
-			return (Position(1, type - 1));
-		} else {
-			return (Position(0, type - PAWN8 - 1));
+		chess_board[x][y] = type;
+	} else if (color == Black) {
+		chess_board[x][y] = type + 16;
+	}
+	return SUCCESS;
+
+}
+
+int ChessGame::GetChessBoardValues (int x, int y)
+{
+	return chess_board[x][y];
+
+}
+
+void ChessGame::PrintBoardValues() 
+{
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			cout <<" "<<GetChessBoardValues(i,j);
 		}
-	} else {
-		if (type < PAWN8) {
-			return (Position (6, type - 1));		
-		} else {
-			return (Position (7, type - PAWN8 - 1));
-		}		
+		cout <<endl<<"------------------------"<<endl;
 	}
 }
+
+int ChessGame::PlayerMovePiece (const Color color, const PieceType type, const Position pos)
+{
+	// If the Position is taken by another piece.
+	int value = 0;
+	if ((value = GetChessBoardValues(pos.GetX(), pos.GetY())) != 0) {	
+		/* If the color of the piece at pos is the same as the one making 
+		   the move, then the move is Invalid 
+		 */
+		if (GetColorFromTypeNumber(value) == color) {
+			return INVALID_MOVE_ERROR;
+		} else {
+		 //Kill the Piece of the opposite player
+			if (value > 16) {
+			  // Killing a Black Piece.
+			   Piece &piece = player2->GetPieceObjectFromPieceType((PieceType) 									(value % 16));
+			   piece.SetPosition(Position(INV_POS, INV_POS));
+			   piece.SetKilledStatus (true);
+			} else {
+			  //Killing a White Piece.
+			   Piece &piece = player1->GetPieceObjectFromPieceType((PieceType) 										 value);
+			   piece.SetPosition(Position(INV_POS, INV_POS));
+			   piece.SetKilledStatus (true);
+
+			}
+		}
+	}
+
+	if (color == White) {
+		Piece &piece = player1->GetPieceObjectFromPieceType(type);
+		piece.SetPosition (pos);
+	} else if (color == Black) {
+		Piece &piece = player2->GetPieceObjectFromPieceType(type);
+		piece.SetPosition (pos);
+	} else {
+		return PLAYER_ERROR;
+	}
+	SetChessBoardByPieceType (type, color);
+	SetNextTurn(!color);
+
+	return SUCCESS;
+
+}
+
 
 #if 0
 ChessGame::int RestoreToMove(int move) 
@@ -102,11 +200,7 @@ ChessGame::int RestoreToMove(int move)
 
 
 
-}
-	 
-
-
-
+}	 
 int Piece::MovePiece (PieceType piece, Position &pos)
 {
 	//Check Position, if its already taken.
@@ -140,6 +234,7 @@ int Piece::MovePiece (PieceType piece, Position &pos)
 }
 
 #endif
+
 
 
 

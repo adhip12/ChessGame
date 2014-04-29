@@ -2,6 +2,8 @@
 
 using namespace std;
 
+#define INV_POS		-1
+
 namespace {
 	static const int NUM_PIECES = 16;	
 }
@@ -12,6 +14,10 @@ typedef enum Colors_t {
 }Color;
 
 typedef enum Error_t {
+	SUCCESS = 0,
+	POSITION_ERROR = 1,
+	PLAYER_ERROR,
+	INVALID_MOVE_ERROR
 }Errors;
 
 typedef enum ChessPieceTypes{
@@ -31,7 +37,7 @@ typedef enum ChessPieceTypes{
 	KNIGHT2,
 	BISHOP2,
 	ROOK2,
-	INVALID_PIECE_TYPE
+	INVALID_PIECE_TYPE = 33
 }PieceType;
 
 //Class to maintain the position on the Chess Board.
@@ -46,6 +52,7 @@ public:
 	int GetY() const { return y; }
 	void SetX(const int x) { this->x = x; }
 	void SetY(const int y) { this->y = y; }
+	bool  InvalidPositionForPieceType();
 };
 
 // Class defintion for a give piece.
@@ -53,18 +60,21 @@ class Piece {
 private :
 	PieceType pieceType;
 	Position pos;
+	bool	killed;
 public :
 	//Constructor
 	Piece();
-	Piece(const PieceType type, const Position &pos);
+	Piece(const PieceType type, const Position &pos, const bool killStatus);
 
-	PieceType getPieceType () const { return pieceType; }
-	Position getPosition() const { return pos; }
-	void setPieceType (const PieceType type) { this->pieceType = type; }
-	void setPosition (const Position &pos) { this->pos = pos; }
+	PieceType GetPieceType () const { return pieceType; }
+	Position GetPosition() const { return pos; }
+	bool GetKilledStatus() const { return killed; }
+	void SetKilledStatus(const bool killed) { this->killed = killed; }
+	void SetPieceType (const PieceType type) { this->pieceType = type; }
+	void SetPosition (const Position &pos) { this->pos = pos; }
 
 	//Move Piece
-	void initPiece (const PieceType type, Position &pos);
+	void initPiece (const PieceType type, const Position &pos);
 	int MovePiece (const PieceType piece, Position &pos); 
 };
 
@@ -79,6 +89,8 @@ public:
 	Player(const Color color);	
 
 	Color getColor() const { return color; }
+	Piece& GetPieceObjectFromPieceType (PieceType type);
+	Position GetInitialPositionOfPiece (PieceType type, Color color);
 };
 
 
@@ -87,10 +99,11 @@ public:
 class ChessGame {
 private:
 
-	int chess_board[8][8];
-	struct Move_History_Node_t *head;
-	struct Move_History_Node_t *tail;
-	int currMove;
+	int 	chess_board[8][8];
+	struct 	Move_History_Node_t *head;
+	struct 	Move_History_Node_t *tail;
+	int 	currMove;
+	Color	nextTurn;
 
 	// 2 players of the Chess Game;
 	Player *player1;
@@ -108,7 +121,19 @@ public:
 	//Destructor
 	~ChessGame();
 
+	int SetChessBoardByPieceType (const PieceType type, const Color color);
+	int GetChessBoardValues (int x, int y);
+
+	int GetNextTurn() const { return nextTurn; }
+	void SetNextTurn(Color color) { this->nextTurn = color; } 
+
 	void RestoreMove (int move);
+	
+	int PlayerMovePiece (const Color color, const PieceType type, const Position pos);
+	
+
+	//Debugging
+	void PrintBoardValues();
 };
 
 
@@ -120,4 +145,3 @@ typedef struct Move_History_Node_t {
 	
 }MoveHistoryNode;
 
-Position GetInitialPositionOfPiece (PieceType type, Color color);
