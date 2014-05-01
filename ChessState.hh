@@ -1,19 +1,13 @@
 #ifndef ChessState_hh
 #define ChessState_hh
 
-#include <iostream>
-#include <vector>
-#include <array>
-
-using namespace std;
-
 #define INV_POS		-1
 
 
 namespace {
 	static const int NUM_PIECES = 16;	
 	static const int WHITE_PIECE_TYPE_MAX = 16;
-	static const int BLACK_PIECE_TYPE_MAX = 16;
+	static const int BLACK_PIECE_TYPE_MAX = 32;
 }	
 
 typedef enum Colors_t {
@@ -33,7 +27,8 @@ typedef enum Error_t {
 	PLAYER_ERROR,
 	INVALID_MOVE_ERROR,
 	NOT_CORRECT_PLAYER_ERROR,
-	INVALID_PLAYER_ERROR
+	INVALID_PLAYER_ERROR,
+	INVALID_PIECE_TYPE_ERROR
 }Errors;
 
 typedef enum ChessPieceTypes{

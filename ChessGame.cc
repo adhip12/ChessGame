@@ -2,7 +2,7 @@
 #include <iostream>
 #include <assert.h>
 
-ChessGame::ChessGame() : head (0), tail(0), currMove(0), nextTurn (White) 
+ChessGame::ChessGame() : currMove(0), nextTurn (White) 
 {
 	player1 = new Player (White);
 	player2 = new Player (Black);
@@ -124,6 +124,16 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, co
 		return NOT_CORRECT_PLAYER_ERROR;
 	}
 
+#if 0
+	/* Check if Piece is Valid */
+	if (CheckIfPieceTypeIsValid(pieceType) == INVALID_PIECE_TYPE) {
+		return INVALID_PIECE_TYPE_ERROR;
+	}
+	/* Check if POsition is Valid */
+	if (pos.InvalidPositionForPieceType()) {
+		return POSITION_ERROR;
+	}
+#endif
 	/* If the Position is taken by another piece. */
 	if ((value = GetChessBoardValuesIfTaken(pos.GetX(), pos.GetY())) != NOT_TAKEN) 	      {	
 		/* If the color of the piece at pos is the same as the one making 
@@ -175,9 +185,10 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, co
 
 	/* Set Current Move number */
 	currentMove = GetCurrentMove();
-	SetCurrentMove (currentMove ++);
+	SetCurrentMove (++currentMove);
 
 	/*Store Move History. */
+	moveHistory.push_back(pieceBoard);	
 	//UpdateMoveToHistory ()
 
 	return SUCCESS;
@@ -185,27 +196,32 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, co
 }
 
 
-#if 0
-ChessGame::int RestoreToMove(int move) 
+int ChessGame::RestoreToMove(int move) 
 {
-	int count = move;
-	// Go back to initial positions.
-	ChessGame();
 
-	if ((move > currMove) || (move < 0)) {
-		return NO_SUCH_MOVE_ERROR;
+	Color color;
+	Player	*tmpPlayer = NULL;
+	
+	if ((move > GetCurrentMove()) || (move < 0)) {
+		return INVALID_MOVE_ERROR;
 	}
 
-	// Traverse the list, until we reach the move number
-	while (count != 0) {
-		Node *node = head;
-		RestorePiece(node->type, )
+	PieceBoard &pieceState = moveHistory.at(move - 1);
+	
+	memset (chess_board, 0, sizeof(chess_board));
 
+	for (int type = 1; type <= NUM_PIECES * 2; type++) {
+		color = GetPieceColorFromPieceType(type);
+		tmpPlayer = GetPlayerFromColor(color);
+		Piece piece = tmpPlayer->GetPieceObjectFromPieceType((PieceType)type);
+		piece.SetPosition(pieceState.at(type - 1).GetPosition());
+		SetChessBoardPosition(piece.GetPosition(), (PieceType)type);
 	}
-
-
+	return SUCCESS;
 
 }	 
+
+#if 0
 int Piece::MovePiece (PieceType piece, Position &pos)
 {
 	//Check Position, if its already taken.
