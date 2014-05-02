@@ -35,48 +35,10 @@ ChessGame::~ChessGame ()
 	delete player2;
 }
 
-int ChessGame::SetChessBoardAndMoveHistoryByPieceType (const PieceType type, const Color color)
-{
-	int x = 0, y = 0; 
-	Position pos;
-	/* Get Player object from color */
-	Player *tmpPlayer = GetPlayerFromColor(color);
-
-	if (tmpPlayer == NULL) {
-		return INVALID_PLAYER_ERROR;
-	}
-
-	/* Get the Piece object from PieceType */
-	const Piece &piece = tmpPlayer->GetPieceObjectFromPieceType(type);
-	/* Get position */
-	pos = piece.GetPosition();
-
-	if (pos.InvalidPositionForPieceType()) {
-		return POSITION_ERROR;
-	}
-
-	x = pos.GetX();	
-	y = pos.GetY();	
-
-	assert(piece.GetPieceType() == type);
-	if (color == White) {
-		/* Set Chess Board */
-		chess_board[x][y] = type;
-		/* Set Move History */
-		pieceBoard.at(type - 1) = piece;
-	} else if (color == Black) {
-		chess_board[x][y] = type + 16;
-		pieceBoard.at(type  + 16 - 1) = piece;
-	}
-	return SUCCESS;
-
-}
-
 
 int ChessGame::GetChessBoardValuesIfTaken (const int x, const int y) const
 {
 	return chess_board[x][y];
-
 }
 
 void ChessGame::PrintBoardValues() 
@@ -122,28 +84,78 @@ void ChessGame::SetChessBoardPosition (Position pos, PieceType value)
 
 }
 
+void ChessGame::IncrementMove() 
+{
+	++currMove;
+}
+
+int ChessGame::CheckIfPieceTypeIsValid(PieceType pieceType)
+{
+	if ((pieceType < PAWN1) || (pieceType > ROOK2)) {
+		return INVALID_PIECE_COLOR;
+	}
+	return SUCCESS;
+}
+
+int ChessGame::SetChessBoardAndMoveHistoryByPieceType (const PieceType type, const Color color)
+{
+	int x = 0, y = 0; 
+	Position pos;
+	/* Get Player object from color */
+	Player *tmpPlayer = GetPlayerFromColor(color);
+
+	if (tmpPlayer == NULL) {
+		return INVALID_PLAYER_ERROR;
+	}
+
+	/* Get the Piece object from PieceType */
+	const Piece &piece = tmpPlayer->GetPieceObjectFromPieceType(type);
+	/* Get position */
+	pos = piece.GetPosition();
+
+	if (pos.InvalidPositionForPieceType()) {
+		return POSITION_ERROR;
+	}
+
+	x = pos.GetX();	
+	y = pos.GetY();	
+
+	assert(piece.GetPieceType() == type);
+	if (color == White) {
+		/* Set Chess Board */
+		chess_board[x][y] = type;
+		/* Set Move History */
+		pieceBoard.at(type - 1) = piece;
+	} else if (color == Black) {
+		chess_board[x][y] = type + 16;
+		pieceBoard.at(type  + 16 - 1) = piece;
+	}
+	return SUCCESS;
+
+}
+
+
+
 int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, const Position pos)
 {
 	int value = 0;
 	Color targetColor;
 	Player *tmpPlayer = NULL;
-	int currentMove = 0;
 
 	/* Check if this Turn is Valid */
 	if (GetNextTurn() != color) {
 		return NOT_CORRECT_PLAYER_ERROR;
 	}
 
-#if 0
 	/* Check if Piece is Valid */
 	if (CheckIfPieceTypeIsValid(pieceType) == INVALID_PIECE_TYPE) {
 		return INVALID_PIECE_TYPE_ERROR;
 	}
-	/* Check if POsition is Valid */
+
+	/* Check if Position is Valid */
 	if (pos.InvalidPositionForPieceType()) {
 		return POSITION_ERROR;
 	}
-#endif
 	/* If the Position is taken by another piece. */
 	if ((value = GetChessBoardValuesIfTaken(pos.GetX(), pos.GetY())) != NOT_TAKEN) 	      {	
 		/* If the color of the piece at pos is the same as the one making 
@@ -193,13 +205,11 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, co
 	/* Change Turn */
 	SetNextTurn(color == White ? Black : White);
 
-	/* Set Current Move number */
-	currentMove = GetCurrentMove();
-	SetCurrentMove (++currentMove);
+	/* Increment  Move number */
+	IncrementMove();
 
 	/*Store Move History. */
 	moveHistory.push_back(pieceBoard);	
-	//UpdateMoveToHistory ()
 
 	return SUCCESS;
 

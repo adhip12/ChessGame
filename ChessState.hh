@@ -16,10 +16,17 @@ typedef enum Colors_t {
 	INVALID_PIECE_COLOR
 }Color;
 
-typedef enum Slot_Status {
+typedef enum Slot_Status_t {
 	NOT_TAKEN = 0,
 	TAKEN
 }SlotStatus;
+
+typedef enum Player_Rows_t {
+	WHITE_ROW_1 = 0,
+	WHITE_ROW_2 = 1,
+	BLACK_ROW_1 = 6,
+	BLACK_ROW_2 = 7
+}PlayerRows;
 
 typedef enum Error_t {
 	SUCCESS = 0,

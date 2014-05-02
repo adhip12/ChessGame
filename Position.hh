@@ -13,7 +13,7 @@ public:
 	int GetY() const { return y; }
 	void SetX(const int x) { this->x = x; }
 	void SetY(const int y) { this->y = y; }
-	bool  InvalidPositionForPieceType();
+	bool  InvalidPositionForPieceType() const;
 };
 
 #endif

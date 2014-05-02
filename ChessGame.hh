@@ -44,6 +44,9 @@ private:
 	int 	SetChessBoardAndMoveHistoryByPieceType (const PieceType type, const Color color);
 	void SetChessBoardPosition (Position pos, PieceType value);
 
+	void IncrementMove();
+	int CheckIfPieceTypeIsValid (PieceType pieceType);
+
 public:
 	ChessGame ();
 

@@ -12,15 +12,15 @@ Position Player::GetInitialPositionOfPiece (const PieceType type, const Color co
 {
 	if (color == White) {
 		if (type <= PAWN8) {
-			return (Position(1, type - 1));
+			return (Position(WHITE_ROW_2, type - 1));
 		} else {
-			return (Position(0, type - PAWN8 - 1));
+			return (Position(WHITE_ROW_1, type - PAWN8 - 1));
 		}
 	} else if (color == Black) {
 		if (type <= PAWN8) {
-			return (Position (6, type - 1));		
+			return (Position (BLACK_ROW_1, type - 1));		
 		} else {
-			return (Position (7, type - PAWN8 - 1));
+			return (Position (BLACK_ROW_2, type - PAWN8 - 1));
 		}		
 	} else {
 		return Position(INV_POS, INV_POS);
