@@ -12,8 +12,6 @@ Player:: Player(Color pieceColor): color(pieceColor)
 
 Position Player::GetInitialPositionOfPiece (PieceType type, Color color)
 {
-	int position;
-
 	if (color == White) {
 		if (type <= PAWN8) {
 			return (Position(1, type - 1));

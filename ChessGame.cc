@@ -6,8 +6,6 @@ ChessGame::ChessGame() : currMove(0), nextTurn (White)
 {
 	player1 = new Player (White);
 	player2 = new Player (Black);
-	ChessMoveHistory moveHistory;
-	//PieceBoard pieceBoard;
 
 	// Initialize the Chess board, and mark the initial positions with the Piece info.
 	memset (chess_board, 0, sizeof(chess_board));
@@ -16,6 +14,7 @@ ChessGame::ChessGame() : currMove(0), nextTurn (White)
 		SetChessBoardAndMoveHistoryByPieceType ((PieceType)type, White); 
 		SetChessBoardAndMoveHistoryByPieceType ((PieceType)type, Black); 
 	}
+	/* This will push back the Initial setup to the Move History */
 	moveHistory.push_back(pieceBoard);
 
 }
@@ -198,7 +197,6 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, co
 
 int ChessGame::RestoreToMove(int move) 
 {
-
 	Color color;
 	Player	*tmpPlayer = NULL;
 	
@@ -206,56 +204,30 @@ int ChessGame::RestoreToMove(int move)
 		return INVALID_MOVE_ERROR;
 	}
 
-	PieceBoard &pieceState = moveHistory.at(move - 1);
-	
+	PieceBoard &pieceState = moveHistory.at(move);
+
 	memset (chess_board, 0, sizeof(chess_board));
 
 	for (int type = 1; type <= NUM_PIECES * 2; type++) {
+		/* Get color of the Piece */
 		color = GetPieceColorFromPieceType(type);
+		/* Object of the player associated */
 		tmpPlayer = GetPlayerFromColor(color);
+		/* Piece */
 		Piece piece = tmpPlayer->GetPieceObjectFromPieceType((PieceType)type);
-		piece.SetPosition(pieceState.at(type - 1).GetPosition());
+		/* Position of the piece on that move */
+		Position pos = pieceState.at(type - 1).GetPosition();
+		/* Set to the Chess Board and Piece */
+		piece.SetPosition(pos);
 		SetChessBoardPosition(piece.GetPosition(), (PieceType)type);
 	}
+	
+	/* Erase the other elements in history */
+	moveHistory.erase(moveHistory.begin() + move + 1, moveHistory.end());
+
+	currMove = move;
+	
 	return SUCCESS;
 
-}	 
-
-#if 0
-int Piece::MovePiece (PieceType piece, Position &pos)
-{
-	//Check Position, if its already taken.
-	if (chess_board[pos->i, pos->j] == TAKEN) {
-		return SLOT_TAKEN_ERROR;
-	}
-	/*Use either the vector of vector method or the linked list node method
-	  to keep track of the move */
-
-	//Also have to keep track of the current position of the piece.
-	//Not ading code for the above right now. Only checking the code to add moves, irrespective of it being an invalid move.
-
-	Node *move = new Node();	
-	Piece *piece = this->piece[piece_num];
-	move->pieceInfo = piece->setPieceInfo (piece_num, pos);
-	move->playerType = player->type;
-
-	if (head == NULL) {
-		head = move;
-		move->next = NULL;
-		move->prev = NULL;
-		tail = move;
-	} else {
-		tail->next = move;
-		move->prev = tail;
-		tail = move;
-	}
-
-	currMove ++;
-	
-}
-
-#endif
-
-
-
+} 
 
