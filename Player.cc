@@ -1,16 +1,14 @@
-#include "Player.hh"
+#include <Player.hh>
 
-Player:: Player(Color pieceColor): color(pieceColor)
+Player:: Player(const Color pieceColor): color(pieceColor)
 {
 	for (int type = 1; type <= NUM_PIECES; type++) {
 		Position pos = GetInitialPositionOfPiece ((PieceType)type, color);
 		piece[type - 1].initPiece((PieceType)type, pos);
-		//newPiece.initPiece (num, Position(pos.i, pos.j));			
-		//piece[num] = *newPiece;
 	}
 }
 
-Position Player::GetInitialPositionOfPiece (PieceType type, Color color)
+Position Player::GetInitialPositionOfPiece (const PieceType type, const Color color) const
 {
 	if (color == White) {
 		if (type <= PAWN8) {

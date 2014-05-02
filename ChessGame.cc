@@ -1,4 +1,4 @@
-#include "ChessGame.hh"
+#include <ChessGame.hh>
 #include <iostream>
 #include <assert.h>
 
@@ -7,10 +7,20 @@ ChessGame::ChessGame() : currMove(0), nextTurn (White)
 	player1 = new Player (White);
 	player2 = new Player (Black);
 
-	// Initialize the Chess board, and mark the initial positions with the Piece info.
+	if (player1 == NULL) {
+		cout<<"Memory Allocation failed"<<endl;
+		exit (-1);
+	}
+	if (player2 == NULL) {
+		delete player1;
+		cout<<"Memory Allocation failed"<<endl;
+		exit (-1);
+	}
+	
+	/* Initialize the Chess board, and mark the initial positions with the Piece info. */
 	memset (chess_board, 0, sizeof(chess_board));
 
-	for (int type = 1; type <= NUM_PIECES; type++) {
+	for (int type = PAWN1; type <= ROOK2; ++type) {
 		SetChessBoardAndMoveHistoryByPieceType ((PieceType)type, White); 
 		SetChessBoardAndMoveHistoryByPieceType ((PieceType)type, Black); 
 	}
@@ -63,7 +73,7 @@ int ChessGame::SetChessBoardAndMoveHistoryByPieceType (const PieceType type, con
 }
 
 
-int ChessGame::GetChessBoardValuesIfTaken (int x, int y)
+int ChessGame::GetChessBoardValuesIfTaken (const int x, const int y) const
 {
 	return chess_board[x][y];
 
@@ -77,9 +87,10 @@ void ChessGame::PrintBoardValues()
 		}
 		cout <<endl<<"------------------------"<<endl;
 	}
+	cout <<endl<<endl;
 }
 
-Color ChessGame::GetPieceColorFromPieceType(int value)
+Color ChessGame::GetPieceColorFromPieceType(const int value) const
 {
 	if ((value < 0) || (value > BLACK_PIECE_TYPE_MAX)) {
 		return INVALID_PIECE_COLOR;
@@ -91,7 +102,7 @@ Color ChessGame::GetPieceColorFromPieceType(int value)
 	}
 }
 
-Player *ChessGame::GetPlayerFromColor(Color color)
+Player *ChessGame::GetPlayerFromColor(const Color color) const
 {
 	if (color == White) {
 		return player1;
@@ -195,7 +206,7 @@ int ChessGame::PlayerMovePiece (const Color color, const PieceType pieceType, co
 }
 
 
-int ChessGame::RestoreToMove(int move) 
+int ChessGame::RestoreToMove(const int move) 
 {
 	Color color;
 	Player	*tmpPlayer = NULL;
@@ -208,7 +219,7 @@ int ChessGame::RestoreToMove(int move)
 
 	memset (chess_board, 0, sizeof(chess_board));
 
-	for (int type = 1; type <= NUM_PIECES * 2; type++) {
+	for (int type = PAWN1; type <= NUM_PIECES * 2; type++) {
 		/* Get color of the Piece */
 		color = GetPieceColorFromPieceType(type);
 		/* Object of the player associated */

@@ -1,12 +1,17 @@
 #ifndef ChessGame_hh
 #define ChessGame_hh
 
-#include "Player.hh"
+#include <Player.hh>
+#include <string.h>
+
 using namespace std;
 
 
 class ChessGame {
 private:
+
+	typedef array<class Piece, 32> PieceBoard;
+	typedef vector<PieceBoard> ChessMoveHistory;
 
 	int 	chess_board[8][8];
 	int 	currMove;
@@ -16,24 +21,23 @@ private:
 	Player *player1;
 	Player *player2;
 
-	/* Copy Constructor */
+	/* Array of Piece */
+	PieceBoard pieceBoard;
+
+	ChessMoveHistory moveHistory;
+
+ 	/* Copy Constructor */
 	ChessGame (const ChessGame &);
 	/* Assignement Operator */
 	ChessGame operator=(const ChessGame &);
 
-	/* Array of Piece */
-	typedef array<class Piece, 32> PieceBoard;
-	PieceBoard pieceBoard;
 
-	typedef vector<PieceBoard> ChessMoveHistory;
-	ChessMoveHistory moveHistory;
- 
-	int 	GetCurrentMove() { return currMove; }
+	int 	GetCurrentMove() const { return currMove; }
 	int 	GetNextTurn() const { return nextTurn; }
-	int 	GetChessBoardValues (int x, int y);
-	int 	GetChessBoardValuesIfTaken (int x, int y);
-	Color	GetPieceColorFromPieceType (int value);
-	Player  *GetPlayerFromColor(Color color);
+	int 	GetChessBoardValues (const int x, const int y) const;
+	int 	GetChessBoardValuesIfTaken (const int x, const int y) const;
+	Color	GetPieceColorFromPieceType (const int value) const;
+	Player  *GetPlayerFromColor(const Color color) const;
 
 	void 	SetCurrentMove (int move) { this->currMove = move; }
 	void 	SetNextTurn(Color color) { this->nextTurn = color; } 
@@ -41,18 +45,15 @@ private:
 	void SetChessBoardPosition (Position pos, PieceType value);
 
 public:
-	//Constructor 
 	ChessGame ();
 
-	//Destructor
 	~ChessGame();
 
-	/* API's available to the user */
 	/* Moving a Piece */
 	int PlayerMovePiece (const Color color, const PieceType type, const Position pos);
-	int RestoreToMove (int move);
+	int RestoreToMove (const int move);
 
-	//Debugging
+	/*Debugging*/
 	void PrintBoardValues();
 };
 

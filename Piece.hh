@@ -1,10 +1,11 @@
 #ifndef Piece_hh
 #define Piece_hh
 
-#include "ChessState.hh"
-#include "Position.hh"
+#include <ChessState.hh>
+#include <Position.hh>
 #include <vector>
 #include <array>
+
 /* Class defintion for a give piece of a player */
 class Piece {
 private :
@@ -12,7 +13,6 @@ private :
 	Position pos;
 	bool	killed;
 public :
-	//Constructor
 	Piece();
 	Piece(const PieceType type, const Position &pos, const bool killStatus);
 
@@ -23,9 +23,7 @@ public :
 	void SetPieceType (const PieceType type) { this->pieceType = type; }
 	void SetPosition (const Position &pos) { this->pos = pos; }
 
-	//Move Piece
 	void initPiece (const PieceType type, const Position &pos);
-	int MovePiece (const PieceType piece, Position &pos); 
 };
 
 #endif

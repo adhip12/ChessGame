@@ -1,4 +1,4 @@
-#include "Piece.hh"
+#include <Piece.hh>
 
 Piece:: Piece (const PieceType type, const Position &posn, const bool killStatus) : pieceType(type), pos(posn), killed(killStatus) {}
 
